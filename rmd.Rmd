@@ -1,0 +1,101 @@
+---
+title: "Tarea1_20120067_"
+author: "Gissela Cornejo (20120067), Klary Lozano"
+date: '2022-05-24'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Parte 2
+
+```{r}
+rm(list=ls())
+```
+
+```{r}
+library(tidyverse)
+library(rio)
+library(survey)
+```
+
+## 0. Importar base de datos.
+
+Fue subida a Github a fin de que sea reproducible sin necesidad de cambiar el directorio de trabajo.
+
+```{r}
+link = "https://github.com/gisselacornejocastellano/CENAGRO-stratified-sampling/raw/main/cenagro2012_mod.dta"
+```
+
+```{r}
+data = import(link, encoding = "UTF-8")
+```
+
+## 1. Calcular las siguientes variables:
+
+### 1.1. Una variable categórica que identifique los siguientes grupos etarios: de 12 a 24 inclusive, de 25 a 64 inclusive, de 65 a más. Llamar a esta variable "rango_edad".
+
+```{r}
+data <- data |> 
+  mutate(rango_edad = case_when(
+    between(edad,12,24) ~ "12-24",
+    between(edad,25,64) ~ "25-64",
+    TRUE ~ "65+"
+  ))
+```
+
+### 1.2. Una variable dicotómica que identifique a las Unidades Agropecuarias (UAs) que son dirigidas por personas cuya lengua materna es el quechua. Llamar a esta variable "ppquechua".
+
+```{r}
+get_labels(data$lengua)
+```
+
+```{r}
+data$ppquechua <- ifelse(data$lengua == "1", 1, 0) 
+```
+
+## 2. Establecer una semilla ("seed") usando los dígitos del cumpleaños de alguno de los miembros de la pareja.
+
+```{r}
+# El seed será 1505
+```
+
+## 3. Extraer una Muestra Aleatoria Simple (MAS) de 2247 observaciones de la población total (base completa).
+
+/// • Para extraer muestras y declarar el diseño muestral, utilizar los comandos utilizados en las PDs (sample/slice_sample y svydesign en R,
+
+```{r}
+set.seed(1505)
+
+mas <- data |>
+  slice_sample(n = 2247)
+```
+
+Con esta muestra, utilizar la variable "sup_total" y obtener los siguientes estadísticos.
+
+### 3.1 La suma de todos los valores, $\sum_{1}^{n}y_i$
+
+```{r}
+
+```
+
+nuevo chunk = ctl + alt + I
+
+pipe = ctlr + shift + m
+
+### 3.2 La media, $\bar{y}=\frac{1}{n}\sum_{i=1}^{n}y_i$
+
+```{r}
+
+```
+
+    La media, y ̅=1/n ∑_(i=1)^n▒y_i 
+    La fracción muestral, f=n/N
+    La corrección de población finita (fpc), (1-n/N)=(1-f), donde f es la fracción muestral
+    La suma de desviaciones al cuadrado, ∑_1^n▒〖(y_i 〗 〖- y ̅)〗^2
+    La varianza de la muestra, s^2=(1/(n-1))∑_1^n▒〖(y_i 〗 〖- y ̅)〗^2
+    La varianza muestral de la media, v(y ̅ )=(1-f)s^2/n
+    El error estándar de la media, se(y ̅ )=√(v(y ̅ ) )
+    El factor de expansión de cada observación. ¿A qué corresponde la sumatoria de esta variable? ¿Por qué?
